@@ -9,7 +9,7 @@ on:
       - main
   workflow_dispatch:
   schedule:
-    - cron: '0 8 * * *'   # Runs every day at 9 AM Nigeria time
+    - cron: '0 8 * * *'   # 9 AM Nigeria time
     - cron: '0 11 * * *'  # 12 PM Nigeria time
     - cron: '0 17 * * *'  # 6 PM Nigeria time
 
@@ -26,17 +26,23 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install Newman locally
-        run: npm install newman newman-reporter-htmlextra --save-dev
+      - name: Install Newman
+        run: npm install newman newman-reporter-htmlextra
 
       - name: Create reports folder
-        run: mkdir -p ./reports
+        run: mkdir -p reports
 
-      - name: Run gbp automation Collection
-        run: npx newman run GBP_Automation.postman_collection.json --env-var BaseUrl=https://dev.dpp.prunepayments.con --env-var transaction_Id=17440c6d-26-4939-a139-a1b94740595b --env-var Account_Id=ab5daea1-c298-4acb-8d14
+      - name: Run GBP Automation Collection
+        run: |
+          npx newman run GBP_Automation.postman_collection.json \
+          --env-var BaseUrl=https://dev.dpp.prunepayments.con \
+          --env-var transaction_Id=17440c6d-26-4939-a139-a1b94740595b \
+          --env-var Account_Id=ab5daea1-c298-4acb-8d14 \
+          -r htmlextra \
+          --reporter-htmlextra-export reports/report.html
 
       - name: Upload HTML Report
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         with:
           name: newman-report
-          path: ./reports/report.html
+          path: reports/report.html
