@@ -1,0 +1,459 @@
+{
+  "info": {
+    "_postman_id": "73a8d324-d259-4024-a51d-d28410d2400f",
+    "name": "PublicObject",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "39498829",
+    "_collection_link": "https://go.postman.co/collection/39498829-73a8d324-d259-4024-a51d-d28410d2400f?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "ListAllObject",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Parse response\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "/**\r",
+              " * 1. Validate HTTP Status Code\r",
+              " */\r",
+              "pm.test(\"API returns 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 2. Validate Response Structure\r",
+              " */\r",
+              "pm.test(\"Response should be an array\", function () {\r",
+              "    pm.expect(response).to.be.an(\"array\").that.is.not.empty;\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 3. Validate Required Fields\r",
+              " */\r",
+              "response.forEach((item, index) => {\r",
+              "\r",
+              "    pm.test(`Product ${index + 1} has required fields`, function () {\r",
+              "        pm.expect(item).to.have.property(\"id\");\r",
+              "        pm.expect(item).to.have.property(\"name\");\r",
+              "        pm.expect(item.id).to.not.be.null;\r",
+              "        pm.expect(item.name).to.be.a(\"string\").that.is.not.empty;\r",
+              "    });\r",
+              "\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.restful-api.dev/objects",
+          "protocol": "https",
+          "host": [
+            "api",
+            "restful-api",
+            "dev"
+          ],
+          "path": [
+            "objects"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateObject",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Parse response\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "/**\r",
+              " * 1. Validate Status Code\r",
+              " */\r",
+              "pm.test(\"Status code is 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 2. Validate Response Structure\r",
+              " */\r",
+              "pm.test(\"Response should be an object\", () => {\r",
+              "    pm.expect(response).to.be.an(\"object\");\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 3. Validate Required Fields\r",
+              " */\r",
+              "pm.test(\"Response contains required fields\", () => {\r",
+              "    pm.expect(response).to.have.property(\"id\");\r",
+              "    pm.expect(response).to.have.property(\"name\");\r",
+              "    pm.expect(response).to.have.property(\"createdAt\");\r",
+              "    pm.expect(response).to.have.property(\"data\");\r",
+              "});\r",
+              "\r",
+              "\r",
+              "/**\r",
+              " * 5. Save ID as Collection Variable\r",
+              " */\r",
+              "pm.collectionVariables.set(\"product_id\", response.id);\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"SamsungGalaxy S10\",\r\n  \"data\": {\r\n    \"year\": 2000,\r\n    \"price\": 200000.99,\r\n    \"CPU model\": \"Intel Core i9\",\r\n    \"Hard disk size\": \"1 TB\"\r\n\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.restful-api.dev/objects",
+          "protocol": "https",
+          "host": [
+            "api",
+            "restful-api",
+            "dev"
+          ],
+          "path": [
+            "objects"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetObjectByID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.json();\r",
+              "\r",
+              "/**\r",
+              " * 1. Validate Status Code\r",
+              " */\r",
+              "pm.test(\"API returns 200 OK\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 2. Validate Response Structure\r",
+              " */\r",
+              "pm.test(\"Response should be an object\", function () {\r",
+              "    pm.expect(response).to.be.an(\"object\");\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 3. Validate Required Fields\r",
+              " */\r",
+              "pm.test(\"Response contains required fields\", function () {\r",
+              "    pm.expect(response).to.have.property(\"id\");\r",
+              "    pm.expect(response).to.have.property(\"name\");\r",
+              "    pm.expect(response).to.have.property(\"data\");\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://api.restful-api.dev/objects/{{product_id}}",
+          "protocol": "https",
+          "host": [
+            "api",
+            "restful-api",
+            "dev"
+          ],
+          "path": [
+            "objects",
+            "{{product_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateObject",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Parse response\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "/**\r",
+              " * 1. Validate Status Code\r",
+              " */\r",
+              "pm.test(\"Status code is 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 2. Validate Response Structure\r",
+              " */\r",
+              "pm.test(\"Response is an object\", () => {\r",
+              "    pm.expect(response).to.be.an(\"object\");\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 3. Validate Required Fields\r",
+              " */\r",
+              "pm.test(\"Response contains required fields\", () => {\r",
+              "    pm.expect(response).to.have.property(\"id\");\r",
+              "    pm.expect(response).to.have.property(\"name\");\r",
+              "    pm.expect(response).to.have.property(\"updatedAt\");\r",
+              "    pm.expect(response).to.have.property(\"data\");\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 4. Validate ID matches saved collection variable\r",
+              " */\r",
+              "pm.test(\"Updated object ID matches stored product_id\", () => {\r",
+              "    pm.expect(response.id).to.eql(pm.collectionVariables.get(\"product_id\"));\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\r\n    \"name\": \"Beats\",\r\n    \"data\": {\r\n        \"Color\": \"Red\",\r\n        \"Description\": \"High-performance wirelesselling headphones\"\r\n    }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.restful-api.dev/objects/{{product_id}}",
+          "protocol": "https",
+          "host": [
+            "api",
+            "restful-api",
+            "dev"
+          ],
+          "path": [
+            "objects",
+            "{{product_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateSIngleField",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Parse response\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "/**\r",
+              " * 1. Validate Status Code\r",
+              " */\r",
+              "pm.test(\"Status code is 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 2. Validate Response Structure\r",
+              " */\r",
+              "pm.test(\"Response is an object\", () => {\r",
+              "    pm.expect(response).to.be.an(\"object\");\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 3. Validate Required Fields\r",
+              " */\r",
+              "pm.test(\"Response contains required fields\", () => {\r",
+              "    pm.expect(response).to.have.property(\"id\");\r",
+              "    pm.expect(response).to.have.property(\"name\");\r",
+              "    pm.expect(response).to.have.property(\"updatedAt\");\r",
+              "    pm.expect(response).to.have.property(\"data\");\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 4. Validate ID matches saved collection variable\r",
+              " */\r",
+              "pm.test(\"Updated object ID matches stored product_id\", () => {\r",
+              "    pm.expect(response.id).to.eql(pm.collectionVariables.get(\"product_id\"));\r",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n\r\n    \"data\": {\r\n        \"Color\": \"Blue\",\r\n        \"Description\": \"headphones\"\r\n    }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.restful-api.dev/objects/{{product_id}}",
+          "protocol": "https",
+          "host": [
+            "api",
+            "restful-api",
+            "dev"
+          ],
+          "path": [
+            "objects",
+            "{{product_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DeleteObject",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Parse response\r",
+              "const response = pm.response.json();\r",
+              "\r",
+              "/**\r",
+              " * 1. Validate Status Code\r",
+              " */\r",
+              "pm.test(\"Status code is 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 3. Validate Message Field Exists\r",
+              " */\r",
+              "pm.test(\"Response contains message field\", () => {\r",
+              "    pm.expect(response).to.have.property(\"message\");\r",
+              "});\r",
+              "\r",
+              "/**\r",
+              " * 4. Validate Success Message\r",
+              " */\r",
+              "pm.test(\"Deletion confirmation message is correct\", () => {\r",
+              "    pm.expect(response.message).to.include(\"has been deleted\");\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://api.restful-api.dev/objects/{{product_id}}",
+          "protocol": "https",
+          "host": [
+            "api",
+            "restful-api",
+            "dev"
+          ],
+          "path": [
+            "objects",
+            "{{product_id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "BaseURL",
+      "value": ""
+    },
+    {
+      "key": "id",
+      "value": ""
+    },
+    {
+      "key": "product_id",
+      "value": ""
+    }
+  ]
+}
