@@ -1,4 +1,4 @@
-name: Run Faith Popoola Collection
+name: Run Faith Popoola Collections
 
 on:
   push:
@@ -12,34 +12,54 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install Newman
-        run: npm install -g newman
-
-      - name: Install HTMLExtra Reporter
-        run: npm install -g newman-reporter-htmlextra
+      - name: Install Newman and HTMLExtra Reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
 
       - name: Create Reports Directory
         run: mkdir -p reports
 
-      - name: Run Postman Collection
+      # ── Collection 1 ──────────────────────────────────────────────
+      - name: Run Collection 1
         run: |
           newman run "PublicObject.postman_collection (2).json" \
-          -r htmlextra,cli \
-          --delay-request 60000 \
-          --reporter-htmlextra-export reports/report.html \
-          --verbose
+            -r htmlextra,cli \
+            --delay-request 60000 \
+            --reporter-htmlextra-export reports/report-collection-1.html \
+            --verbose
         shell: bash
 
-      - name: Upload HTML Report
+      # ── Collection 2 ──────────────────────────────────────────────
+      - name: Run Collection 2
+        run: |
+          newman run "PrivateObject.postman_collection (1).json" \
+            -r htmlextra,cli \
+            --delay-request 60000 \
+            --reporter-htmlextra-export reports/report-collection-2.html \
+            --verbose
+        shell: bash
+
+      # ── Upload both reports ────────────────────────────────────────
+      - name: Upload Collection 1 Report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: newman-report
-          path: reports/report.html
+          name: newman-report-collection-1
+          path: reports/report-collection-1.html
+          retention-days: 7
+
+      - name: Upload Collection 2 Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-report-collection-2
+          path: reports/report-collection-2.html
           retention-days: 7
