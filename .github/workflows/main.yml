@@ -1,17 +1,10 @@
-name: Run Postman API Collection
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+name: Run Faith Popoola Collections
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-  schedule:
-    - cron: '0 8 * * *'   # Runs every day at 9 AM Nigeria time
-    - cron: '0 11 * * *'  # 12 PM Nigeria time
-    - cron: '0 17 * * *'  # 6 PM Nigeria time
 
 jobs:
   run-newman:
@@ -19,24 +12,54 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Install Newman locally
-        run: npm install newman newman-reporter-htmlextra --save-dev
+      - name: Install Newman and HTMLExtra Reporter
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
 
-      - name: Create reports folder
-        run: mkdir -p ./reports
+      - name: Create Reports Directory
+        run: mkdir -p reports
 
-      - name: Run gbp automation Collection
-        run: npx newman run GBP_Automation.postman_collection.json --env-var BaseUrl=https://dev.dpp.prunepayments.con --env-var transaction_Id=17440c6d-26-4939-a139-a1b94740595b --env-var Account_Id=ab5daea1-c298-4acb-8d14
+      # ── Collection 1 ──────────────────────────────────────────────
+      - name: Run Collection 1
+        run: |
+          newman run "PublicObject.postman_collection (2).json" \
+            -r htmlextra,cli \
+            --delay-request 60000 \
+            --reporter-htmlextra-export reports/report-collection-1.html \
+            --verbose
+        shell: bash
 
-      - name: Upload HTML Report
-        uses: actions/upload-artifact@v5
+      # ── Collection 2 ──────────────────────────────────────────────
+      - name: Run Collection 2
+        run: |
+          newman run "PrivateObject.postman_collection (1).json" \
+            -r htmlextra,cli \
+            --delay-request 60000 \
+            --reporter-htmlextra-export reports/report-collection-2.html \
+            --verbose
+        shell: bash
+
+      # ── Upload both reports ────────────────────────────────────────
+      - name: Upload Collection 1 Report
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          name: newman-report
-          path: ./reports/report.html
+          name: newman-report-collection-1
+          path: reports/report-collection-1.html
+          retention-days: 7
+
+      - name: Upload Collection 2 Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-report-collection-2
+          path: reports/report-collection-2.html
+          retention-days: 7
